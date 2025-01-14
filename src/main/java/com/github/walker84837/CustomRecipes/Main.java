@@ -94,8 +94,7 @@ public class Main extends JavaPlugin implements Listener {
         ItemStack cookedRabbit = new ItemStack(Material.COOKED_RABBIT);
         ItemMeta meta = cookedRabbit.getItemMeta();
 
-        meta.displayName(Component.text("Treated Rotten Flesh")
-            .color(TextColor.fromHexString("#a05a20")));
+        meta.itemName(serializer.deserialize("<#b25024>Treated Rotten Flesh"));
 
         meta.getPersistentDataContainer()
             .set(new NamespacedKey(this, rabbitNbtName), PersistentDataType.STRING, rabbitNbtName);
@@ -103,7 +102,7 @@ public class Main extends JavaPlugin implements Listener {
         cookedRabbit.setItemMeta(meta);
 
         FurnaceRecipe fleshToRabbit = new FurnaceRecipe(
-            fleshKey, cookedRabbit, Material.ROTTEN_FLESH, 0.5f, 260
+            fleshKey, cookedRabbit, new RecipeChoice.MaterialChoice(Material.ROTTEN_FLESH), 0.5f, 260
         );
         return fleshToRabbit;
     }
