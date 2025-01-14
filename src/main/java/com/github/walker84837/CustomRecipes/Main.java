@@ -14,7 +14,8 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        shapedRecipes = (addSaddleRecipe(), addBreadRecipe()).asList();
+        shapedRecipes.add(addSaddleRecipe());
+        shapedRecipes.add(addBreadRecipe());
 
         for (ShapedRecipe recipe : shapedRecipes) {
             getServer().addRecipe(recipe);
@@ -41,6 +42,7 @@ public class Main extends JavaPlugin {
     }
 
     // Adds a placeholder recipe for bread with NBT data
+    // TODO: add custom and colored name (Component API -> MiniMessage)
     private ShapedRecipe addBreadRecipe() {
         // Create a NamespacedKey for the recipe
         NamespacedKey breadKey = new NamespacedKey(this, "super_toast");
@@ -48,7 +50,7 @@ public class Main extends JavaPlugin {
         // Create the result ItemStack (Bread)
         ItemStack breadItem = new ItemStack(Material.BREAD);
 
-        // Add placeholder NBT data (fill in later)
+        // TODO: set NBT identifier and custom name
         // TODO: add effects to apply to user when toast is eaten
         breadItem.getItemMeta().getPersistentDataContainer().set(
             new NamespacedKey(this, "placeholderNBT"), PersistentDataType.STRING, "placeholder"
