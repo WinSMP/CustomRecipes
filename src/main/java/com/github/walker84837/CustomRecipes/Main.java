@@ -26,6 +26,7 @@ public class Main extends JavaPlugin implements Listener {
     ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<>();
     ArrayList<FurnaceRecipe> smeltingRecipes = new ArrayList<>();
     ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
+    ArrayList<BlastingRecipe> blastingRecipes = new ArrayList<>();
 
     MiniMessage serializer = MiniMessage.builder()
      .tags(TagResolver.builder()
@@ -49,12 +50,17 @@ public class Main extends JavaPlugin implements Listener {
         shapelessRecipes.add(decompressDirtRecipe());
         shapelessRecipes.add(decompressCobblestoneRecipe());
         smeltingRecipes.add(rottenFleshRecipe());
+        blastingRecipes.add(rottenFleshToLeather());
 
         for (ShapedRecipe recipe : shapedRecipes) {
             getServer().addRecipe(recipe);
         }
 
         for (FurnaceRecipe recipe : smeltingRecipes) {
+            getServer().addRecipe(recipe);
+        }
+
+        for (BlastingRecipe recipe : blastingRecipes) {
             getServer().addRecipe(recipe);
         }
 
@@ -125,6 +131,25 @@ public class Main extends JavaPlugin implements Listener {
             fleshKey, cookedRabbit, new RecipeChoice.MaterialChoice(Material.ROTTEN_FLESH), 0.5f, 260
         );
         return fleshToRabbit;
+    }
+
+    private BlastingRecipe rottenFleshToLeather() {
+        final String leatherNbtName = "blasted_flesh";
+        NamespacedKey fleshKey = new NamespacedKey(this, leatherNbtName);
+        ItemStack leather = new ItemStack(Material.LEATHER);
+        ItemMeta meta = leather.getItemMeta();
+
+        meta.itemName(serializer.deserialize("<#59714f>Zombie Skin"));
+
+        meta.getPersistentDataContainer()
+            .set(new NamespacedKey(this, leatherNbtName), PersistentDataType.STRING, leatherNbtName);
+
+        leather.setItemMeta(meta);
+
+        BlastingRecipe fleshToLeather = new BlastingRecipe(
+            fleshKey, leather, new RecipeChoice.MaterialChoice(Material.ROTTEN_FLESH), 0.75f, 420
+        );
+        return fleshToLeather;
     }
 
     private ShapedRecipe compressedStoneRecipe() {
