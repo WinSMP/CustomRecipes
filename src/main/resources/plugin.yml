@@ -1,4 +1,4 @@
-main: com.github.walker84837.CustomRecipes.Main
+main: org.winlogon.customrecipes.Main
 name: ${NAME}
 version: "${VERSION}"
 api-version: "1.21"
