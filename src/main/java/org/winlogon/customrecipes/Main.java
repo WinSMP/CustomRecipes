@@ -1,22 +1,22 @@
-package com.github.walker84837.CustomRecipes;
+package org.winlogon.customrecipes;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.*;
-import net.kyori.adventure.text.minimessage.tag.standard.*;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.*;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 

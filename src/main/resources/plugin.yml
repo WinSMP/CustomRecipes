@@ -1,7 +1,0 @@
-main: org.winlogon.customrecipes.Main
-name: ${NAME}
-version: "${VERSION}"
-api-version: "1.21"
-author: walker84837
-folia-supported: true
-description: CustomRecipes - QOL upgrades that improve unused items by adding recipes to them.
