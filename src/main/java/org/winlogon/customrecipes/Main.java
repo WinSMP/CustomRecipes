@@ -230,6 +230,19 @@ public class Main extends JavaPlugin implements Listener {
         return recipe;
     }
 
+    /* usage:
+     * createRecipe("Super Toast", new String[]{"#5e28fb", "#af37fa"})
+     *          .outputMaterial(Material.BREAD)
+     *          .shape("AAA", "BCB", "AAA")
+     *          .ingredient('A', Material.BREAD)
+     *          .ingredient('B', Material.WHEAT)
+     *          .ingredient('C', Material.GOLD_BLOCK)
+     *          .register();
+     */
+    private RecipeBuilder createRecipe(String displayName, Object nameColor) {
+        return new RecipeBuilder(this, displayName, nameColor, serializer);
+    }
+
     @EventHandler
     public void onConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();

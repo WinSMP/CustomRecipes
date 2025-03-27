@@ -21,6 +21,9 @@ import org.bukkit.potion.PotionEffectType;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class RecipeBuilder {
         private final Main plugin; private final String displayName;
@@ -34,11 +37,13 @@ public class RecipeBuilder {
         private String[] shape;
         private Map<Character, Material> ingredients = new HashMap<>();
         private Consumer<Player> onEat;
+        private MiniMessage serializer;
 
-        public RecipeBuilder(Main plugin, String displayName, Object nameColor) {
+        public RecipeBuilder(Main plugin, String displayName, Object nameColor, MiniMessage serializer) {
             this.plugin = plugin;
             this.displayName = displayName;
             this.nameColor = nameColor;
+            this.serializer = serializer;
         }
 
         public RecipeBuilder outputMaterial(Material material) {
