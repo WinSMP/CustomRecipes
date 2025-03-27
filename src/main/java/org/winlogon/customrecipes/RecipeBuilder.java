@@ -137,7 +137,7 @@ public class RecipeBuilder {
             nbtNamespacedKey = new NamespacedKey(plugin, nbtKey);
 
             if (meta != null) {
-                meta.displayName(displayComponent);
+                meta.itemName(displayComponent);
                 meta.getPersistentDataContainer().set(nbtNamespacedKey, PersistentDataType.STRING, nbtKey);
             }
         }
