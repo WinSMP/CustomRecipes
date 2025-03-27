@@ -118,7 +118,10 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private RecipeBuilder createRecipe(String displayName, Object nameColor) {
-        return new RecipeBuilder(this, displayName, nameColor, serializer, shapedRecipes, smeltingRecipes, shapelessRecipes, blastingRecipes, onEatHandlers);
+        return new RecipeBuilder(
+            this, displayName, nameColor, serializer, shapedRecipes, smeltingRecipes, 
+            shapelessRecipes, blastingRecipes, onEatHandlers
+        );
     }
 
     @EventHandler
