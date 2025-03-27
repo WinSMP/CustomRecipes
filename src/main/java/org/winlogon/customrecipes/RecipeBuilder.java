@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -113,27 +112,27 @@ public class RecipeBuilder {
             throw new IllegalArgumentException("Recipe must have a display name or a custom key");
         }
 
-        NamespacedKey recipeKey = new NamespacedKey(plugin, keyName);
-        ItemStack result = new ItemStack(outputMaterial);
-        ItemMeta meta = result.getItemMeta();
+        var recipeKey = new NamespacedKey(plugin, keyName);
+        var result = new ItemStack(outputMaterial);
+        var meta = result.getItemMeta();
 
         Component displayComponent = null;
         NamespacedKey nbtNamespacedKey = null;
 
         if (displayName != null && !displayName.isEmpty()) {
-            String finalDisplayName = compressed ? "Compressed " + displayName : displayName;
+            var finalDisplayName = compressed ? "Compressed " + displayName : displayName;
 
             if (nameColor instanceof String) {
-                String color = (String) nameColor;
+                var color = (String) nameColor;
                 displayComponent = serializer.deserialize(String.format("<%s>%s", color, finalDisplayName));
             } else if (nameColor instanceof String[]) {
-                String[] colors = (String[]) nameColor;
+                var colors = (String[]) nameColor;
                 displayComponent = serializer.deserialize(String.format("<gradient:%s:%s>%s</gradient>", colors[0], colors[1], finalDisplayName));
             } else {
                 throw new IllegalArgumentException("Invalid color type");
             }
 
-            String nbtKey = keyName + "_nbt";
+            var nbtKey = keyName + "_nbt";
             nbtNamespacedKey = new NamespacedKey(plugin, nbtKey);
 
             if (meta != null) {
@@ -147,29 +146,29 @@ public class RecipeBuilder {
         }
 
         if (compressed) {
-            ShapedRecipe shaped = new ShapedRecipe(recipeKey, result);
+            var shaped = new ShapedRecipe(recipeKey, result);
             shaped.shape("AAA", "AAA", "AAA");
             shaped.setIngredient('A', outputMaterial);
             shapedRecipes.add(shaped);
 
-            NamespacedKey decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
-            ItemStack decompressResult = new ItemStack(outputMaterial, 9);
-            ShapelessRecipe shapeless = new ShapelessRecipe(decompressKey, decompressResult);
+            var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
+            var decompressResult = new ItemStack(outputMaterial, 9);
+            var shapeless = new ShapelessRecipe(decompressKey, decompressResult);
             shapeless.addIngredient(new RecipeChoice.ExactChoice(result));
             shapelessRecipes.add(shapeless);
         } else if (FurnaceRecipe.class.isAssignableFrom(recipeType)) {
-            FurnaceRecipe furnaceRecipe = new FurnaceRecipe(recipeKey, result, new RecipeChoice.MaterialChoice(inputMaterial), experience, cookingTime);
+            var furnaceRecipe = new FurnaceRecipe(recipeKey, result, new RecipeChoice.MaterialChoice(inputMaterial), experience, cookingTime);
             smeltingRecipes.add(furnaceRecipe);
         } else if (BlastingRecipe.class.isAssignableFrom(recipeType)) {
-            BlastingRecipe blastingRecipe = new BlastingRecipe(recipeKey, result, new RecipeChoice.MaterialChoice(inputMaterial), experience, cookingTime);
+            var blastingRecipe = new BlastingRecipe(recipeKey, result, new RecipeChoice.MaterialChoice(inputMaterial), experience, cookingTime);
             blastingRecipes.add(blastingRecipe);
         } else if (recipeType == ShapedRecipe.class) {
-            ShapedRecipe shaped = new ShapedRecipe(recipeKey, result);
+            var shaped = new ShapedRecipe(recipeKey, result);
             shaped.shape(shape);
             ingredients.forEach((key, material) -> shaped.setIngredient(key, material));
             shapedRecipes.add(shaped);
         } else if (recipeType == ShapelessRecipe.class) {
-            ShapelessRecipe shapeless = new ShapelessRecipe(recipeKey, result);
+            var shapeless = new ShapelessRecipe(recipeKey, result);
             ingredients.values().forEach(shapeless::addIngredient);
             shapelessRecipes.add(shapeless);
         }
