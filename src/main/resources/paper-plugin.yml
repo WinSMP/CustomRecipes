@@ -2,6 +2,7 @@ main: ${PACKAGE}.Main
 name: ${NAME}
 version: "${VERSION}"
 api-version: "1.21"
-author: walker84837
+author: winlogon
+website: "${WEBSITE}"
 folia-supported: true
-description: "CustomRecipes - QOL upgrades that improve unused items by adding recipes to them."
+description: "QOL upgrades to unused items and old, removed recipes."
