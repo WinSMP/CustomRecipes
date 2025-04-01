@@ -5,11 +5,17 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -18,10 +24,10 @@ public class RecipeBuilder {
     private final String displayName;
     private final Object nameColor;
     private final MiniMessage serializer;
-    private final ArrayList<ShapedRecipe> shapedRecipes;
-    private final ArrayList<FurnaceRecipe> smeltingRecipes;
-    private final ArrayList<ShapelessRecipe> shapelessRecipes;
-    private final ArrayList<BlastingRecipe> blastingRecipes;
+    private final List<ShapedRecipe> shapedRecipes;
+    private final List<FurnaceRecipe> smeltingRecipes;
+    private final List<ShapelessRecipe> shapelessRecipes;
+    private final List<BlastingRecipe> blastingRecipes;
     private final Map<NamespacedKey, Consumer<Player>> onEatHandlers;
 
     private boolean compressed = false;
@@ -36,10 +42,10 @@ public class RecipeBuilder {
     private Consumer<Player> onEat;
 
     public RecipeBuilder(Main plugin, String displayName, Object nameColor, MiniMessage serializer,
-                         ArrayList<ShapedRecipe> shapedRecipes,
-                         ArrayList<FurnaceRecipe> smeltingRecipes,
-                         ArrayList<ShapelessRecipe> shapelessRecipes,
-                         ArrayList<BlastingRecipe> blastingRecipes,
+                         List<ShapedRecipe> shapedRecipes,
+                         List<FurnaceRecipe> smeltingRecipes,
+                         List<ShapelessRecipe> shapelessRecipes,
+                         List<BlastingRecipe> blastingRecipes,
                          Map<NamespacedKey, Consumer<Player>> onEatHandlers) {
         this.plugin = plugin;
         this.displayName = displayName;
@@ -122,11 +128,9 @@ public class RecipeBuilder {
         if (displayName != null && !displayName.isEmpty()) {
             var finalDisplayName = compressed ? "Compressed " + displayName : displayName;
 
-            if (nameColor instanceof String) {
-                var color = (String) nameColor;
+            if (nameColor instanceof String color) {
                 displayComponent = serializer.deserialize(String.format("<%s>%s", color, finalDisplayName));
-            } else if (nameColor instanceof String[]) {
-                var colors = (String[]) nameColor;
+            } else if (nameColor instanceof String[] colors) {
                 displayComponent = serializer.deserialize(String.format("<gradient:%s:%s>%s</gradient>", colors[0], colors[1], finalDisplayName));
             } else {
                 throw new IllegalArgumentException("Invalid color type");

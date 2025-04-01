@@ -24,14 +24,15 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class Main extends JavaPlugin implements Listener {
-    ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<>();
-    ArrayList<FurnaceRecipe> smeltingRecipes = new ArrayList<>();
-    ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
-    ArrayList<BlastingRecipe> blastingRecipes = new ArrayList<>();
+    private final List<ShapedRecipe> shapedRecipes = new ArrayList<>();
+    private final List<FurnaceRecipe> smeltingRecipes = new ArrayList<>();
+    private final List<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
+    private final List<BlastingRecipe> blastingRecipes = new ArrayList<>();
     Map<NamespacedKey, Consumer<Player>> onEatHandlers = new HashMap<>();
 
     MiniMessage serializer = MiniMessage.builder()
