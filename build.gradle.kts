@@ -16,14 +16,14 @@ fun getTime(): String {
 }
 
 // Set version to version property if supplied
-val shortVersion: String? = if (project.hasProperty("ver")) {
+val shortVersion: String = if (project.hasProperty("ver")) {
     val ver = project.property("ver") as String
     if (ver.startsWith("v")) {
         ver.substring(1).uppercase()
     } else {
         ver.uppercase()
     }
-} else null
+} else ""
 
 // If the tag includes "-RC-" or no tag is supplied, append "-SNAPSHOT"
 val version = when {

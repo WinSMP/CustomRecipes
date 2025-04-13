@@ -1,6 +1,5 @@
 package org.winlogon.customrecipes;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
@@ -13,10 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -94,12 +91,12 @@ public class Main extends JavaPlugin implements Listener {
                 .outputMaterial(Material.COBBLESTONE)
                 .register();
 
-        createRecipe("Netherrack", "#663231")
+        createRecipe("Netherrack", "#BD5C5B")
                 .compressed(true)
                 .outputMaterial(Material.NETHERRACK)
                 .register();
 
-        createRecipe("Treated Rotten Flesh", "#b25024")
+        createRecipe("Treated Rotten Flesh", "#B25024")
                 .type(FurnaceRecipe.class)
                 .inputMaterial(Material.ROTTEN_FLESH)
                 .outputMaterial(Material.COOKED_RABBIT)
@@ -107,7 +104,7 @@ public class Main extends JavaPlugin implements Listener {
                 .cookingTime(260)
                 .register();
 
-        createRecipe("Zombie Skin", "#59714f")
+        createRecipe("Zombie Skin", "#59714F")
                 .type(BlastingRecipe.class)
                 .inputMaterial(Material.ROTTEN_FLESH)
                 .outputMaterial(Material.LEATHER)
@@ -132,12 +129,12 @@ public class Main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onConsume(PlayerItemConsumeEvent event) {
-        ItemStack item = event.getItem();
-        ItemMeta meta = item.getItemMeta();
-        Player eater = event.getPlayer();
+        var item = event.getItem();
+        var meta = item.getItemMeta();
+        var eater = event.getPlayer();
 
         if (meta == null) {
-            Component message = serializer.deserialize("<#F93822>Error: <#D3E0EA>Something went wrong when getting item information!");
+            var message = serializer.deserialize("<red><b>ERROR</b></red> <gray>Something went wrong when getting item information!</gray>");
             eater.sendMessage(message);
             return;
         }
