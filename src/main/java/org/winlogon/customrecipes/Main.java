@@ -94,6 +94,11 @@ public class Main extends JavaPlugin implements Listener {
                 .outputMaterial(Material.COBBLESTONE)
                 .register();
 
+        createRecipe("Netherrack", "#663231")
+                .compressed(true)
+                .outputMaterial(Material.NETHERRACK)
+                .register();
+
         createRecipe("Treated Rotten Flesh", "#b25024")
                 .type(FurnaceRecipe.class)
                 .inputMaterial(Material.ROTTEN_FLESH)
