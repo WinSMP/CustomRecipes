@@ -73,7 +73,7 @@ dependencies {
     // compileOnly("net.kyori:adventure-text-minimessage:4.19.0")
     testImplementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
 
 tasks.test {
