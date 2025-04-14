@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class Main extends JavaPlugin implements Listener {
+public class CustomRecipes extends JavaPlugin implements Listener {
     private final List<ShapedRecipe> shapedRecipes = new ArrayList<>();
     private final List<FurnaceRecipe> smeltingRecipes = new ArrayList<>();
     private final List<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
