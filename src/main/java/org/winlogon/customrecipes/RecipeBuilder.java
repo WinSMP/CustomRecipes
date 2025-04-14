@@ -109,74 +109,92 @@ public class RecipeBuilder {
     }
 
     public void register() {
-        String keyName;
+        final String keyName;
         if (customKey != null) {
             keyName = customKey;
         } else if (displayName != null && !displayName.isEmpty()) {
-            keyName = (compressed ? "Compressed " + displayName : displayName).toLowerCase().replace(' ', '_');
+            keyName = (compressed ? "Compressed " + displayName : displayName)
+                          .toLowerCase().replace(' ', '_');
         } else {
             throw new IllegalArgumentException("Recipe must have a display name or a custom key");
         }
-
+        
         var recipeKey = new NamespacedKey(plugin, keyName);
         var result = new ItemStack(outputMaterial);
         var meta = result.getItemMeta();
-
         Component displayComponent = null;
         NamespacedKey nbtNamespacedKey = null;
-
+    
         if (displayName != null && !displayName.isEmpty()) {
             var finalDisplayName = compressed ? "Compressed " + displayName : displayName;
-
-            if (nameColor instanceof String color) {
-                displayComponent = serializer.deserialize(String.format("<%s>%s", color, finalDisplayName));
-            } else if (nameColor instanceof String[] colors) {
-                displayComponent = serializer.deserialize(String.format("<gradient:%s:%s>%s</gradient>", colors[0], colors[1], finalDisplayName));
-            } else {
-                throw new IllegalArgumentException("Invalid color type");
-            }
-
+    
+            displayComponent = switch (nameColor) {
+                case String color -> serializer.deserialize(STR."<\{color}>\{finalDisplayName}");
+                case String[] colors -> serializer.deserialize(STR."<gradient:\{colors[0]}:\{colors[1]}>\{finalDisplayName}</gradient>");
+                default -> throw new IllegalArgumentException("Invalid color type");
+            };
+    
             var nbtKey = keyName + "_nbt";
             nbtNamespacedKey = new NamespacedKey(plugin, nbtKey);
-
+    
             if (meta != null) {
                 meta.itemName(displayComponent);
                 meta.getPersistentDataContainer().set(nbtNamespacedKey, PersistentDataType.STRING, nbtKey);
             }
         }
-
+    
         if (meta != null) {
             result.setItemMeta(meta);
         }
-
+    
         if (compressed) {
             var shaped = new ShapedRecipe(recipeKey, result);
             shaped.shape("AAA", "AAA", "AAA");
             shaped.setIngredient('A', outputMaterial);
             shapedRecipes.add(shaped);
-
+    
             var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
             var decompressResult = new ItemStack(outputMaterial, 9);
             var shapeless = new ShapelessRecipe(decompressKey, decompressResult);
             shapeless.addIngredient(new RecipeChoice.ExactChoice(result));
             shapelessRecipes.add(shapeless);
-        } else if (FurnaceRecipe.class.isAssignableFrom(recipeType)) {
-            var furnaceRecipe = new FurnaceRecipe(recipeKey, result, new RecipeChoice.MaterialChoice(inputMaterial), experience, cookingTime);
-            smeltingRecipes.add(furnaceRecipe);
-        } else if (BlastingRecipe.class.isAssignableFrom(recipeType)) {
-            var blastingRecipe = new BlastingRecipe(recipeKey, result, new RecipeChoice.MaterialChoice(inputMaterial), experience, cookingTime);
-            blastingRecipes.add(blastingRecipe);
-        } else if (recipeType == ShapedRecipe.class) {
-            var shaped = new ShapedRecipe(recipeKey, result);
-            shaped.shape(shape);
-            ingredients.forEach((key, material) -> shaped.setIngredient(key, material));
-            shapedRecipes.add(shaped);
-        } else if (recipeType == ShapelessRecipe.class) {
-            var shapeless = new ShapelessRecipe(recipeKey, result);
-            ingredients.values().forEach(shapeless::addIngredient);
-            shapelessRecipes.add(shapeless);
+        } else {
+            switch (recipeType.getSimpleName()) {
+                case "FurnaceRecipe" -> {
+                    var furnaceRecipe = new FurnaceRecipe(
+                            recipeKey,
+                            result,
+                            new RecipeChoice.MaterialChoice(inputMaterial),
+                            experience,
+                            cookingTime
+                    );
+                    smeltingRecipes.add(furnaceRecipe);
+                }
+                case "BlastingRecipe" -> {
+                    var blastingRecipe = new BlastingRecipe(
+                            recipeKey,
+                            result,
+                            new RecipeChoice.MaterialChoice(inputMaterial),
+                            experience,
+                            cookingTime
+                    );
+                    blastingRecipes.add(blastingRecipe);
+                }
+                case "ShapedRecipe" -> {
+                    var shaped = new ShapedRecipe(recipeKey, result);
+                    shaped.shape(shape);
+                    ingredients.forEach(shaped::setIngredient);
+                    shapedRecipes.add(shaped);
+                }
+                case "ShapelessRecipe" -> {
+                    var shapeless = new ShapelessRecipe(recipeKey, result);
+                    ingredients.values().forEach(shapeless::addIngredient);
+                    shapelessRecipes.add(shapeless);
+                }
+                default -> throw new IllegalArgumentException("Unsupported recipe type: " + recipeType.getName());
+            }
         }
-
+    
         if (onEat != null && nbtNamespacedKey != null) {
             onEatHandlers.put(nbtNamespacedKey, onEat);
         }

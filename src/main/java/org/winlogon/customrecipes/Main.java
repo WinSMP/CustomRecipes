@@ -134,8 +134,7 @@ public class Main extends JavaPlugin implements Listener {
         var eater = event.getPlayer();
 
         if (meta == null) {
-            var message = serializer.deserialize("<red><b>ERROR</b></red> <gray>Something went wrong when getting item information!</gray>");
-            eater.sendMessage(message);
+            eater.sendRichMessage("<red><b>ERROR</b></red> <gray>Something went wrong when getting item information!</gray>");
             return;
         }
 

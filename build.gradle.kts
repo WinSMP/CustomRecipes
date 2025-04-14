@@ -35,6 +35,7 @@ val version = when {
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 repositories {
@@ -110,6 +111,10 @@ tasks.register("printProjectName") {
     doLast {
         println(rootProject.name)
     }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
 }
 
 tasks.register("release") {
