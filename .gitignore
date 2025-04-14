@@ -37,3 +37,4 @@ replay_pid*
 
 # IntelliJ IDEA folder
 .idea/
+/kls_database.db
