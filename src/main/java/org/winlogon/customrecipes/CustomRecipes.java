@@ -9,9 +9,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.persistence.PersistentDataType;
@@ -148,5 +150,16 @@ public class CustomRecipes extends JavaPlugin implements Listener {
 
     public void addOnEatHandler(NamespacedKey key, Consumer<Player> handler) {
         onEatHandlers.put(key, handler);
+    }
+
+    @EventHandler
+    public void onPlace(BlockPlaceEvent event) {
+        ItemStack item = event.getItemInHand();
+        boolean compressed = item.getPersistentDataContainer().getOrDefault(
+                new NamespacedKey(this, "compressed"),
+                PersistentDataType.BOOLEAN,
+                false
+        );
+        event.setCancelled(compressed);
     }
 }

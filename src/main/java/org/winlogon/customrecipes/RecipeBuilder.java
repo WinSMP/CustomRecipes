@@ -122,6 +122,11 @@ public class RecipeBuilder {
         
         var recipeKey = new NamespacedKey(plugin, keyName);
         var result = new ItemStack(outputMaterial);
+        result.editMeta(meta -> {
+            meta.setEnchantmentGlintOverride(true);
+            meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "compressed"), PersistentDataType.BOOLEAN, true);
+        });
+
         var meta = result.getItemMeta();
         Component displayComponent = null;
         NamespacedKey nbtNamespacedKey = null;
@@ -156,6 +161,7 @@ public class RecipeBuilder {
     
             var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
             var decompressResult = new ItemStack(outputMaterial, 9);
+
             var shapeless = new ShapelessRecipe(decompressKey, decompressResult);
             shapeless.addIngredient(new RecipeChoice.ExactChoice(result));
             shapelessRecipes.add(shapeless);
