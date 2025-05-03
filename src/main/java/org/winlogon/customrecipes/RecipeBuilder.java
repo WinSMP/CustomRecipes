@@ -155,8 +155,12 @@ public class RecipeBuilder {
     
         if (compressed) {
             var shaped = new ShapedRecipe(recipeKey, result);
+
+            var outputStack = new ItemStack(outputMaterial);
+            var plain = new RecipeChoice.ExactChoice(outputStack);
+
             shaped.shape("AAA", "AAA", "AAA");
-            shaped.setIngredient('A', outputMaterial);
+            shaped.setIngredient('A', plain);
             shapedRecipes.add(shaped);
     
             var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
