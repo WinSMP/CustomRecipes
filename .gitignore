@@ -10,6 +10,7 @@ bin/
 .settings/
 .classpath
 .project
+.devcontainer/
 
 # Compiled class file
 *.class
