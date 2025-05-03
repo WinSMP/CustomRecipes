@@ -2,6 +2,7 @@ package org.winlogon.customrecipes;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class RecipeBuilder {
-    private final Main plugin;
+    private final CustomRecipes plugin;
     private final String displayName;
     private final Object nameColor;
     private final MiniMessage serializer;
@@ -41,7 +42,7 @@ public class RecipeBuilder {
     private Map<Character, Material> ingredients = new HashMap<>();
     private Consumer<Player> onEat;
 
-    public RecipeBuilder(Main plugin, String displayName, Object nameColor, MiniMessage serializer,
+    public RecipeBuilder(CustomRecipes plugin, String displayName, Object nameColor, MiniMessage serializer,
                          List<ShapedRecipe> shapedRecipes,
                          List<FurnaceRecipe> smeltingRecipes,
                          List<ShapelessRecipe> shapelessRecipes,
@@ -121,6 +122,11 @@ public class RecipeBuilder {
         
         var recipeKey = new NamespacedKey(plugin, keyName);
         var result = new ItemStack(outputMaterial);
+        result.editMeta(meta -> {
+            meta.setEnchantmentGlintOverride(true);
+            meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "compressed"), PersistentDataType.BOOLEAN, true);
+        });
+
         var meta = result.getItemMeta();
         Component displayComponent = null;
         NamespacedKey nbtNamespacedKey = null;
@@ -155,6 +161,7 @@ public class RecipeBuilder {
     
             var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
             var decompressResult = new ItemStack(outputMaterial, 9);
+
             var shapeless = new ShapelessRecipe(decompressKey, decompressResult);
             shapeless.addIngredient(new RecipeChoice.ExactChoice(result));
             shapelessRecipes.add(shapeless);
