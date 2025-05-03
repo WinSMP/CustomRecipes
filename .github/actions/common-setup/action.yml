@@ -14,7 +14,7 @@ runs:
       uses: actions/setup-java@v4
       with:
         java-version: ${{ inputs.java-version }}
-        distribution: 'zulu'
+        distribution: 'temurin'
         cache: gradle
 
     - name: Setup Gradle
