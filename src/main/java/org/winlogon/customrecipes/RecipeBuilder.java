@@ -123,7 +123,7 @@ public class RecipeBuilder {
         var recipeKey = new NamespacedKey(plugin, keyName);
         var result = new ItemStack(outputMaterial);
         result.editMeta(meta -> {
-            meta.setEnchantmentGlintOverride(true);
+            if (compressed) meta.setEnchantmentGlintOverride(true);
             meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "compressed"), PersistentDataType.BOOLEAN, true);
         });
 
