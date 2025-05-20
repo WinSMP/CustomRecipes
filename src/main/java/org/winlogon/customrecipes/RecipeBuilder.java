@@ -122,10 +122,12 @@ public class RecipeBuilder {
         
         var recipeKey = new NamespacedKey(plugin, keyName);
         var result = new ItemStack(outputMaterial);
-        result.editMeta(meta -> {
-            if (compressed) meta.setEnchantmentGlintOverride(true);
-            meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "compressed"), PersistentDataType.BOOLEAN, true);
-        });
+        if (compressed) {
+            result.editMeta(meta -> {
+                meta.setEnchantmentGlintOverride(true);
+                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "compressed"), PersistentDataType.BOOLEAN, true);
+            });
+        }
 
         var meta = result.getItemMeta();
         Component displayComponent = null;
@@ -153,61 +155,78 @@ public class RecipeBuilder {
             result.setItemMeta(meta);
         }
     
-        if (compressed) {
-            var shaped = new ShapedRecipe(recipeKey, result);
-
-            var outputStack = new ItemStack(outputMaterial);
-            var plain = new RecipeChoice.ExactChoice(outputStack);
-
-            shaped.shape("AAA", "AAA", "AAA");
-            shaped.setIngredient('A', plain);
-            shapedRecipes.add(shaped);
-    
-            var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
-            var decompressResult = new ItemStack(outputMaterial, 9);
-
-            var shapeless = new ShapelessRecipe(decompressKey, decompressResult);
-            shapeless.addIngredient(new RecipeChoice.ExactChoice(result));
-            shapelessRecipes.add(shapeless);
+        if (!compressed) {
+            handleNonCompressedRecipes(recipeKey, result, ingredients);
         } else {
-            switch (recipeType.getSimpleName()) {
-                case "FurnaceRecipe" -> {
-                    var furnaceRecipe = new FurnaceRecipe(
-                            recipeKey,
-                            result,
-                            new RecipeChoice.MaterialChoice(inputMaterial),
-                            experience,
-                            cookingTime
-                    );
-                    smeltingRecipes.add(furnaceRecipe);
-                }
-                case "BlastingRecipe" -> {
-                    var blastingRecipe = new BlastingRecipe(
-                            recipeKey,
-                            result,
-                            new RecipeChoice.MaterialChoice(inputMaterial),
-                            experience,
-                            cookingTime
-                    );
-                    blastingRecipes.add(blastingRecipe);
-                }
-                case "ShapedRecipe" -> {
-                    var shaped = new ShapedRecipe(recipeKey, result);
-                    shaped.shape(shape);
-                    ingredients.forEach(shaped::setIngredient);
-                    shapedRecipes.add(shaped);
-                }
-                case "ShapelessRecipe" -> {
-                    var shapeless = new ShapelessRecipe(recipeKey, result);
-                    ingredients.values().forEach(shapeless::addIngredient);
-                    shapelessRecipes.add(shapeless);
-                }
-                default -> throw new IllegalArgumentException("Unsupported recipe type: " + recipeType.getName());
-            }
+            handleCompressedRecipes(recipeKey, result, ingredients, keyName);
         }
     
         if (onEat != null && nbtNamespacedKey != null) {
             onEatHandlers.put(nbtNamespacedKey, onEat);
+        }
+    }
+
+    private void handleCompressedRecipes(
+        NamespacedKey recipeKey,
+        ItemStack result,
+        Map<Character, Material> ingredients,
+        String keyName
+    ) {
+        var shaped = new ShapedRecipe(recipeKey, result);
+
+        var outputStack = new ItemStack(outputMaterial);
+        var plain = new RecipeChoice.ExactChoice(outputStack);
+
+        shaped.shape("AAA", "AAA", "AAA");
+        shaped.setIngredient('A', plain);
+        shapedRecipes.add(shaped);
+        
+        var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
+        var decompressResult = new ItemStack(outputMaterial, 9);
+
+        var shapeless = new ShapelessRecipe(decompressKey, decompressResult);
+        shapeless.addIngredient(new RecipeChoice.ExactChoice(result));
+        shapelessRecipes.add(shapeless);
+    }
+
+    private void handleNonCompressedRecipes(
+        NamespacedKey recipeKey,
+        ItemStack result,
+        Map<Character, Material> ingredients
+    ) {
+        switch (recipeType) {
+            case Class<?> c when FurnaceRecipe.class.isAssignableFrom(c) -> {
+                var furnaceRecipe = new FurnaceRecipe(
+                        recipeKey,
+                        result,
+                        new RecipeChoice.MaterialChoice(inputMaterial),
+                        experience,
+                        cookingTime
+                );
+                smeltingRecipes.add(furnaceRecipe);
+            }
+            case Class<?> c when BlastingRecipe.class.isAssignableFrom(c) -> {
+                var blastingRecipe = new BlastingRecipe(
+                        recipeKey,
+                        result,
+                        new RecipeChoice.MaterialChoice(inputMaterial),
+                        experience,
+                        cookingTime
+                );
+                blastingRecipes.add(blastingRecipe);
+            }
+            case Class<?> c when ShapedRecipe.class.isAssignableFrom(c) -> {
+                var shaped = new ShapedRecipe(recipeKey, result);
+                shaped.shape(shape);
+                ingredients.forEach(shaped::setIngredient);
+                shapedRecipes.add(shaped);
+            }
+            case Class<?> c when ShapelessRecipe.class.isAssignableFrom(c) -> {
+                var shapeless = new ShapelessRecipe(recipeKey, result);
+                ingredients.values().forEach(shapeless::addIngredient);
+                shapelessRecipes.add(shapeless);
+            }
+            default -> throw new IllegalArgumentException("Unsupported recipe type: " + recipeType.getSimpleName());
         }
     }
 }
