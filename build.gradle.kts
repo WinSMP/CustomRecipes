@@ -68,8 +68,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
-    testImplementation("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-pre3-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:1.21.11-pre3-R0.1-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.1")
 }
