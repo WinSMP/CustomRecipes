@@ -27,7 +27,7 @@ val shortVersion: String = if (project.hasProperty("ver")) {
 
 // If the tag includes "-RC-" or no tag is supplied, append "-SNAPSHOT"
 val version = when {
-    shortVersion.isNullOrEmpty() -> "${getTime()}-SNAPSHOT"
+    shortVersion.isEmpty() -> "${getTime()}-SNAPSHOT"
     shortVersion.contains("-RC-") -> "${shortVersion.substringBefore("-RC-")}-SNAPSHOT"
     else -> shortVersion
 }
@@ -108,10 +108,6 @@ tasks.register("printProjectName") {
     doLast {
         println(rootProject.name)
     }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    options.compilerArgs.add("--enable-preview")
 }
 
 tasks.register("release") {
