@@ -3,7 +3,7 @@ import java.util.Date
 import java.util.TimeZone
 
 plugins {
-    id("com.gradleup.shadow") version "9.3.0"
+    id("com.gradleup.shadow") version "9.3.1"
     id("java")
 }
 
@@ -27,7 +27,7 @@ val shortVersion: String = if (project.hasProperty("ver")) {
 
 // If the tag includes "-RC-" or no tag is supplied, append "-SNAPSHOT"
 val version = when {
-    shortVersion.isNullOrEmpty() -> "${getTime()}-SNAPSHOT"
+    shortVersion.isEmpty() -> "${getTime()}-SNAPSHOT"
     shortVersion.contains("-RC-") -> "${shortVersion.substringBefore("-RC-")}-SNAPSHOT"
     else -> shortVersion
 }
@@ -71,7 +71,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
     testImplementation("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.2")
 }
 
 tasks.test {
@@ -108,10 +108,6 @@ tasks.register("printProjectName") {
     doLast {
         println(rootProject.name)
     }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    options.compilerArgs.add("--enable-preview")
 }
 
 tasks.register("release") {
