@@ -30,6 +30,7 @@ public class RecipeBuilder {
     private final List<ShapelessRecipe> shapelessRecipes;
     private final List<BlastingRecipe> blastingRecipes;
     private final Map<NamespacedKey, Consumer<Player>> onEatHandlers;
+    private final Map<Character, Material> ingredients = new HashMap<>();
 
     private boolean compressed = false;
     private Class<? extends Recipe> recipeType = ShapedRecipe.class;
@@ -39,7 +40,6 @@ public class RecipeBuilder {
     private int cookingTime = 0;
     private String[] shape;
     private String customKey = null;
-    private Map<Character, Material> ingredients = new HashMap<>();
     private Consumer<Player> onEat;
 
     public RecipeBuilder(CustomRecipes plugin, String displayName, Object nameColor, MiniMessage serializer,
@@ -121,7 +121,7 @@ public class RecipeBuilder {
         }
         
         var recipeKey = new NamespacedKey(plugin, keyName);
-        var result = new ItemStack(outputMaterial);
+        var result = ItemStack.of(outputMaterial);
         if (compressed) {
             result.editMeta(meta -> {
                 meta.setEnchantmentGlintOverride(true);
@@ -130,15 +130,15 @@ public class RecipeBuilder {
         }
 
         var meta = result.getItemMeta();
-        Component displayComponent = null;
+        Component displayComponent;
         NamespacedKey nbtNamespacedKey = null;
     
         if (displayName != null && !displayName.isEmpty()) {
             var finalDisplayName = compressed ? "Compressed " + displayName : displayName;
     
             displayComponent = switch (nameColor) {
-                case String color -> serializer.deserialize(STR."<\{color}>\{finalDisplayName}");
-                case String[] colors -> serializer.deserialize(STR."<gradient:\{colors[0]}:\{colors[1]}>\{finalDisplayName}</gradient>");
+                case String color -> serializer.deserialize("<%s>%s".formatted(color, finalDisplayName));
+                case String[] colors -> serializer.deserialize("<gradient:%s:%s>%s</gradient>".formatted(colors[0], colors[1], finalDisplayName));
                 default -> throw new IllegalArgumentException("Invalid color type");
             };
     
@@ -158,7 +158,7 @@ public class RecipeBuilder {
         if (!compressed) {
             handleNonCompressedRecipes(recipeKey, result, ingredients);
         } else {
-            handleCompressedRecipes(recipeKey, result, ingredients, keyName);
+            handleCompressedRecipes(recipeKey, result, keyName);
         }
     
         if (onEat != null && nbtNamespacedKey != null) {
@@ -169,12 +169,11 @@ public class RecipeBuilder {
     private void handleCompressedRecipes(
         NamespacedKey recipeKey,
         ItemStack result,
-        Map<Character, Material> ingredients,
         String keyName
     ) {
         var shaped = new ShapedRecipe(recipeKey, result);
 
-        var outputStack = new ItemStack(outputMaterial);
+        var outputStack = ItemStack.of(outputMaterial);
         var plain = new RecipeChoice.ExactChoice(outputStack);
 
         shaped.shape("AAA", "AAA", "AAA");
@@ -182,7 +181,7 @@ public class RecipeBuilder {
         shapedRecipes.add(shaped);
         
         var decompressKey = new NamespacedKey(plugin, "decompress_" + keyName);
-        var decompressResult = new ItemStack(outputMaterial, 9);
+        var decompressResult = ItemStack.of(outputMaterial, 9);
 
         var shapeless = new ShapelessRecipe(decompressKey, decompressResult);
         shapeless.addIngredient(new RecipeChoice.ExactChoice(result));
